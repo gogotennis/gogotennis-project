@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,java
 
 ## Security ##
-*.properties
+application.properties
 
 
 ### Intellij ###
