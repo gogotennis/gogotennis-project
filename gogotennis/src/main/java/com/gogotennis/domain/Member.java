@@ -15,9 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.gogotennis.dto.MemberSaveForm;
 import com.gogotennis.dto.MemberUpdateForm;
 import com.gogotennis.web.Gender;
@@ -26,10 +23,17 @@ import com.gogotennis.web.Provider;
 import com.gogotennis.web.Role;
 import com.gogotennis.web.Tier;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Member implements Serializable {
 
 	@Id
@@ -80,34 +84,23 @@ public class Member implements Serializable {
 
 	private String image;
 
-	public static Member createMember(MemberSaveForm form, Record record) throws NoSuchAlgorithmException {
-		Member member = new Member();
+	public static Member createMember(final MemberSaveForm form, final Record record) throws NoSuchAlgorithmException {
 		PasswordEncrypt passwordEncrypt = new PasswordEncrypt();
-		member.setLoginId(form.getLoginId());
-		member.setPassword(passwordEncrypt.encrypt(form.getPassword()));
-		member.setNickname(form.getNickname());
-		member.setEmail(form.getEmail());
-		String birth = form.getYear() + form.getMonth() + form.getDay();
-		member.setBirthday(birth);
-		member.setPhoneNumber(form.getPhoneNumber());
-		member.setGender(Gender.valueOf(form.getGender()));
-		member.setProvider(Provider.GOGOTENNIS);
-		member.setRecord(record);
-		member.setRole(Role.MEMBER);
-		member.setTier(Tier.IRON);
-		if (form.getGender().toString().equals("MALE")) {
-			member.setImage("/image/member/1");
-		} else {
-			member.setImage("/image/member/2");
-		}
-		return member;
-	}
 
-	public void updateMember(MemberUpdateForm form, Member member) {
-		member.setId(form.getId());
-		member.setNickname(form.getNickname());
-		member.setIntroduction(form.getIntroduction());
-
+		return Member.builder()
+			.loginId(form.getLoginId())
+			.password(passwordEncrypt.encrypt(form.getPassword()))
+			.nickname(form.getNickname())
+			.email(form.getNickname())
+			.birthday(form.getYear() + form.getMonth() + form.getDay())
+			.phoneNumber(form.getPhoneNumber())
+			.gender(Gender.valueOf(form.getGender()))
+			.provider(Provider.GOGOTENNIS)
+			.record(record)
+			.role(Role.MEMBER)
+			.tier(Tier.IRON)
+			.image("/image/member/1")
+			.build();
 	}
 
 	public static Member createKakaoMember(Map<String, Object> userInfo, String access_token, Record record) {
@@ -157,13 +150,19 @@ public class Member implements Serializable {
 		return member;
 	}
 
-	public void memberWithdrawl(Member member, String uuid) {
+	public void withdrawMember(Member member, String uuid) {
 		member.setId(member.getId());
-		member.setLoginId("탈퇴된 회원" + member.getId());
+		member.setLoginId("탈퇴한 회원" + member.getId());
 		member.setPassword(uuid);
-		member.setNickname("탈퇴된 회원" + member.getId());
-		member.setEmail("탈퇴된 회원" + member.getId());
-		member.setPhoneNumber("탈퇴된 회원" + member.getId());
+		member.setNickname("탈퇴한 회원" + member.getId());
+		member.setEmail("탈퇴한 회원" + member.getId());
+		member.setPhoneNumber("탈퇴한 회원" + member.getId());
+	}
+
+	public void updateMember(final MemberUpdateForm form, final Member member) {
+		member.setId(form.getId());
+		member.setNickname(form.getNickname());
+		member.setIntroduction(form.getIntroduction());
 	}
 
 	//  public void setImgEn(MultipartFile file, Member member) throws IOException {
