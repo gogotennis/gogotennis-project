@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import com.gogotennis.domain.Member;
 import com.gogotennis.domain.Player;
 import com.gogotennis.dto.FindPasswordForm;
@@ -38,6 +36,9 @@ import com.gogotennis.service.MatchingService;
 import com.gogotennis.service.MemberService;
 import com.gogotennis.service.PlayerService;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Controller
 @RequestMapping("members")
@@ -45,7 +46,6 @@ import com.gogotennis.service.PlayerService;
 public class MemberController {
 
 	private final MemberService memberService;
-
 	private final PlayerService playerService;
 	private final MatchingService matchingService;
 
@@ -56,14 +56,13 @@ public class MemberController {
 	}
 
 	@PostMapping("/new")
-	public String signUp(@Validated @ModelAttribute("member") MemberSaveForm form,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
+	public String signUp(@Validated @ModelAttribute("member") MemberSaveForm form, BindingResult bindingResult)
+		throws NoSuchAlgorithmException {
 		if (bindingResult.hasErrors()) {
 			log.info("errors = {}", bindingResult);
 			return "members/signUpPage";
 		}
-		//SignUp Success Logic
-		Long memberId = memberService.signUp(form);
+		memberService.signUp(form);
 
 		return "redirect:/";
 	}
@@ -219,7 +218,7 @@ public class MemberController {
 		String uuid = UUID.randomUUID().toString();
 
 		// 회원 정보 변경
-		memberService.memberWithDrawl(memberId, uuid);
+		memberService.withdrawMember(memberId, uuid);
 
 		// 세션 죽이기(로그아웃)
 		HttpSession session = request.getSession(false);
