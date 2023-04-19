@@ -1,6 +1,5 @@
 package com.gogotennis.service;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.RequiredArgsConstructor;
 import com.gogotennis.domain.Member;
 import com.gogotennis.domain.Record;
 import com.gogotennis.dto.MemberSaveForm;
@@ -19,6 +17,8 @@ import com.gogotennis.dto.UpdatePasswordForm;
 import com.gogotennis.repository.MemberRepository;
 import com.gogotennis.repository.RecordRepository;
 import com.gogotennis.web.PasswordEncrypt;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -83,22 +83,16 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Long updateMember(MemberUpdateForm form, MultipartFile file) throws IOException {
-
+	public Long updateMember(MemberUpdateForm form, MultipartFile file) {
 		Member member = findById(form.getId());
 		member.updateMember(form, member);
-
 		return member.getId();
 	}
 
 	@Transactional
-	public Long memberWithDrawl(Long memberId, String uuid) {
-
+	public void withdrawMember(Long memberId, String uuid) {
 		Member member = findById(memberId);
-
-		member.memberWithdrawl(member, uuid);
-
-		return member.getId();
+		member.withdrawMember(member, uuid);
 	}
 
 	@Transactional
