@@ -9,5 +9,4 @@ public class MatchingSearchCondition {
 	private String matchType;
 	private String courtType;
 	private String matchingPlace;
-
 }
