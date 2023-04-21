@@ -7,13 +7,13 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import com.gogotennis.web.CourtType;
 import com.gogotennis.web.MatchingType;
 
-@Getter
-@Setter
+@Data
 public class MatchingSaveForm {
 
 	@NotNull
@@ -43,12 +43,8 @@ public class MatchingSaveForm {
 	private CourtType courtType;
 
 	private String beforeHour;
-
 	private String beforeTwoHour;
-
 	private String team;
-
 	private String lat;
 	private String lng;
-
 }
