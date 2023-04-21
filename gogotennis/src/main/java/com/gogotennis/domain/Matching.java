@@ -21,9 +21,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.gogotennis.dto.MatchingSaveForm;
 import com.gogotennis.dto.MatchingUpdateForm;
 import com.gogotennis.dto.ResultAddForm;
@@ -33,10 +30,18 @@ import com.gogotennis.web.MatchingCondition;
 import com.gogotennis.web.MatchingStatus;
 import com.gogotennis.web.MatchingType;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @DynamicInsert
 public class Matching {
 
@@ -96,7 +101,6 @@ public class Matching {
 	private MatchingStatus matchingStatus;
 
 	private String beforeHour;
-
 	private String beforeTwoHour;
 
 	@ManyToOne(fetch = LAZY)
@@ -110,41 +114,30 @@ public class Matching {
 	private String lng;
 
 	public static Matching createMatching(MatchingSaveForm form, Member member) {
-		Matching matching = new Matching();
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-
-		matching.setTitle(form.getTitle());
-		matching.setPlace(form.getPlace());
-		matching.setAuthor(member.getNickname());
-		matching.setMatchingDate(form.getMatchingDate());
-		matching.setMatchingStartTime(form.getMatchingStartTime());
-		matching.setMatchingEndTime(form.getMatchingEndTime());
-		matching.setCreatedDate(LocalDateTime.now().format(dtf));
-		matching.setCourtType(form.getCourtType());
-		matching.setMatchingType(form.getMatchingType());
-		matching.setMatchingCondition(MatchingCondition.AVAILABLE);
-		matching.setMatchingStatus(MatchingStatus.BEFORE);
-		matching.setBeforeHour(form.getBeforeHour());
-		matching.setBeforeTwoHour(form.getBeforeTwoHour());
-		matching.setPlayerNumber(matching.getPlayerNumber());
-		matching.setMember(member);
-		matching.setLat(form.getLat());
-		matching.setLng(form.getLng());
-
-		StringBuilder builder = new StringBuilder();
-		String matchContent = form.getContent();
-		String[] split = matchContent.split("\\n");
-		String matchInfo = new String();
-		for (int i = 0; i < split.length; i++) {
-			matchInfo += split[i] + "\n";
-			matching.setContent(matchInfo);
-		}
-		return matching;
+		return Matching.builder()
+			.title(form.getTitle())
+			.place(form.getPlace())
+			.author(member.getNickname())
+			.matchingDate(form.getMatchingDate())
+			.matchingStartTime(form.getMatchingStartTime())
+			.matchingEndTime(form.getMatchingEndTime())
+			.createdDate(LocalDateTime.now().format(dtf))
+			.courtType(form.getCourtType())
+			.matchingType(form.getMatchingType())
+			.matchingStatus(MatchingStatus.BEFORE)
+			.beforeHour(form.getBeforeHour())
+			.beforeTwoHour(form.getBeforeTwoHour())
+			.playerNumber(1)
+			.member(member)
+			.lat(form.getLat())
+			.lng(form.getLng())
+			.content(form.getContent())
+			.build();
 	}
 
 	public void updateMatching(Matching matching, MatchingUpdateForm form, Member member) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-
 		matching.setId(form.getId());
 		matching.setTitle(form.getTitle());
 		matching.setPlace(form.getPlace());
@@ -157,7 +150,6 @@ public class Matching {
 		matching.setMember(member);
 		matching.setLat(form.getLat());
 		matching.setLng(form.getLng());
-
 		matching.setContent(form.getContent());
 	}
 
